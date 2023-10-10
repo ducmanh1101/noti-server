@@ -16,17 +16,17 @@ export class TopicsService {
     } catch (error: any) {}
   }
 
-  async addSubscribers(subscriberId: string, topicKey: string) {
+  async addSubscribers(topicKey: string, subscribers: string[]) {
     try {
       await novu.topics.addSubscribers(topicKey, {
-        subscribers: [subscriberId],
+        subscribers: subscribers,
       });
     } catch (error: any) {}
   }
 
   async removeSubscribers(subscriberId: string, topicKey: string) {
     try {
-      await novu.topics.addSubscribers(topicKey, {
+      await novu.topics.removeSubscribers(topicKey, {
         subscribers: [subscriberId],
       });
     } catch (error: any) {}

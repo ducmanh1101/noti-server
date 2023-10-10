@@ -33,9 +33,10 @@ export class SubscribersService {
       await novu.subscribers.delete(subscriberId);
     } catch (er: any) {}
   }
-  async findAll(page: number, limit: number) {
+
+  async findAll() {
     try {
-      await novu.subscribers.list(page, limit);
+      await novu.subscribers.list();
     } catch (error: any) {}
   }
 }

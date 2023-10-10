@@ -4,3 +4,7 @@ export class EventDto {
   title: string;
   description: string;
 }
+export class EventTopicDto {
+  title: string;
+  description: string;
+}

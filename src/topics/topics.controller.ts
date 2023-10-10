@@ -10,4 +10,9 @@ export class TopicsController {
   create(@Body() topicDto: TopicDto) {
     return this.topicsService.create(topicDto);
   }
+
+  @Post('/add')
+  addSub(topicKey: string, subscribers: string[]) {
+    return this.topicsService.addSubscribers(topicKey, subscribers);
+  }
 }

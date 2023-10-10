@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { EventDto } from './dto/event.dto';
-import { Novu } from '@novu/node';
+import { EventDto, EventTopicDto } from './dto/event.dto';
+import { Novu, TriggerRecipientsTypeEnum } from '@novu/node';
 import { API_KEY, WORKFLOW_TRIGGER_ID } from 'src/constant';
 
 const novu = new Novu(API_KEY);
@@ -20,5 +20,17 @@ export class EventService {
         },
       });
     } catch (er: any) {}
+  }
+
+  async sendTopicNotification(key: string, eventTopicDto: EventTopicDto) {
+    const result = await novu.trigger(WORKFLOW_TRIGGER_ID, {
+      to: [{ type: TriggerRecipientsTypeEnum.TOPIC, topicKey: key }],
+      payload: {
+        title: eventTopicDto.title,
+        description: eventTopicDto.description,
+      },
+    });
+
+    return result.data;
   }
 }

@@ -16,8 +16,8 @@ export class SubscribersController {
   constructor(private readonly subscribersService: SubscribersService) {}
 
   @Get()
-  findAll(page: number, limit: number) {
-    return this.subscribersService.findAll(page, limit);
+  findAll() {
+    return this.subscribersService.findAll();
   }
 
   @Post()

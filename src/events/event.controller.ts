@@ -1,6 +1,6 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Param } from '@nestjs/common';
 import { EventService } from './event.service';
-import { EventDto } from './dto/event.dto';
+import { EventDto, EventTopicDto } from './dto/event.dto';
 
 @Controller('event')
 export class EventController {
@@ -9,5 +9,13 @@ export class EventController {
   @Post()
   create(@Body() createEventDto: EventDto) {
     return this.eventService.create(createEventDto);
+  }
+
+  @Post('topics/:key')
+  sendTopicNotification(
+    @Param('key') key: string,
+    @Body() eventTopicDto: EventTopicDto,
+  ) {
+    return this.eventService.sendTopicNotification(key, eventTopicDto);
   }
 }

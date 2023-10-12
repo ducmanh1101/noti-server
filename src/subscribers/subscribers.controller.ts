@@ -16,8 +16,13 @@ export class SubscribersController {
   constructor(private readonly subscribersService: SubscribersService) {}
 
   @Get()
-  findAll() {
-    return this.subscribersService.findAll();
+  getAllSubs() {
+    return this.subscribersService.getAllSubscribers();
+  }
+
+  @Get(':subscriberId')
+  getSubscriber(@Param('subscriberId') subscriberId: string) {
+    return this.subscribersService.getSubscriber(subscriberId);
   }
 
   @Post()
@@ -25,9 +30,12 @@ export class SubscribersController {
     return this.subscribersService.create(createSubscriberDto);
   }
 
-  @Put()
-  update(subscriberId: string, deviceTokens: []) {
-    return this.subscribersService.setDeviceToken(subscriberId, deviceTokens);
+  @Put(':subscriberId')
+  update(
+    @Param('subscriberId') subscriberId: string,
+    @Body('deviceTokens') deviceToken: [],
+  ) {
+    return this.subscribersService.setDeviceToken(subscriberId, deviceToken);
   }
 
   @Delete(':subscriberId')

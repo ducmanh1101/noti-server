@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 import { TopicsService } from './topics.service';
 import { TopicDto } from './dto/topic.dto';
 
@@ -6,13 +6,26 @@ import { TopicDto } from './dto/topic.dto';
 export class TopicsController {
   constructor(private readonly topicsService: TopicsService) {}
 
-  @Post()
-  create(@Body() topicDto: TopicDto) {
-    return this.topicsService.create(topicDto);
+  @Get()
+  getAllTopics() {
+    return this.topicsService.getAllTopic();
   }
 
-  @Post('/add')
-  addSub(topicKey: string, subscribers: string[]) {
+  @Get(':topicKey')
+  getTopic(@Param('topicKey') topicKey: string) {
+    return this.topicsService.getTopic(topicKey);
+  }
+
+  @Post()
+  createTopic(@Body() topicDto: TopicDto) {
+    return this.topicsService.createTopic(topicDto);
+  }
+
+  @Post('/add/:topicKey')
+  addSub(
+    @Param('topicKey') topicKey: string,
+    @Body('subscribers') subscribers: string,
+  ) {
     return this.topicsService.addSubscribers(topicKey, subscribers);
   }
 }

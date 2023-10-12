@@ -1,27 +1,64 @@
 import { Injectable } from '@nestjs/common';
 import { TopicDto } from './dto/topic.dto';
 import { Novu } from '@novu/node';
-import { API_KEY } from 'src/constant';
+import { API_KEY, API_KEY_SDK } from 'src/constant';
+import axios from 'axios';
 
-const novu = new Novu(API_KEY);
+const novu = new Novu(API_KEY_SDK);
 
 @Injectable()
 export class TopicsService {
-  async create(topicDto: TopicDto) {
+  async createTopic(topicDto: TopicDto) {
     try {
       await novu.topics.create({
         key: topicDto.key,
         name: topicDto.name,
       });
-    } catch (error: any) {}
+    } catch (error: any) {
+      console.log(error);
+    }
   }
 
-  async addSubscribers(topicKey: string, subscribers: string[]) {
+  async getTopic(topicKey: string) {
     try {
-      await novu.topics.addSubscribers(topicKey, {
-        subscribers: subscribers,
+      const res = await axios.get(`https://api.novu.co/v1/topics/${topicKey}`, {
+        headers: {
+          Authorization: API_KEY,
+        },
       });
-    } catch (error: any) {}
+      return res.data.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  async getAllTopic() {
+    try {
+      const response = await axios.get(`https://api.novu.co/v1/topics`, {
+        headers: {
+          Authorization: API_KEY,
+        },
+      });
+      return response.data.data;
+    } catch (error) {}
+  }
+
+  async addSubscribers(topicKey: string, subscribers: string) {
+    try {
+      const options = {
+        method: 'POST',
+        url: `https://api.novu.co/v1/topics/${topicKey}/subscribers`,
+        headers: {
+          Authorization: API_KEY,
+          'Content-Type': 'application/json',
+        },
+        data: {
+          subscribers: [subscribers],
+        },
+      };
+      await axios(options);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
   }
 
   async removeSubscribers(subscriberId: string, topicKey: string) {

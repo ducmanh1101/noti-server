@@ -25,9 +25,12 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^10.0.0",
     "@novu/node": "0.18.0",
+    "axios": "^1.5.1",
     "cors": "^2.8.5",
+    "iron-session": "^6.3.1",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "siwe": "^2.1.4"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",

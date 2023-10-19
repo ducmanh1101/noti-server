@@ -1,15 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { TopicDto } from './dto/topic.dto';
 import { Novu } from '@novu/node';
-import { API_KEY, API_KEY_SDK } from 'src/constant';
 import axios from 'axios';
-
-const novu = new Novu(API_KEY_SDK);
+import configuration from 'src/config/configuration';
 
 @Injectable()
 export class TopicsService {
   async createTopic(topicDto: TopicDto) {
     try {
+      const novu = new Novu(configuration().novu.apiKeySdk);
       await novu.topics.create({
         key: topicDto.key,
         name: topicDto.name,
@@ -23,7 +22,7 @@ export class TopicsService {
     try {
       const res = await axios.get(`https://api.novu.co/v1/topics/${topicKey}`, {
         headers: {
-          Authorization: API_KEY,
+          Authorization: configuration().novu.apiKey,
         },
       });
       return res.data.data;
@@ -35,7 +34,7 @@ export class TopicsService {
     try {
       const response = await axios.get(`https://api.novu.co/v1/topics`, {
         headers: {
-          Authorization: API_KEY,
+          Authorization: configuration().novu.apiKey,
         },
       });
       return response.data.data;
@@ -48,7 +47,7 @@ export class TopicsService {
         method: 'POST',
         url: `https://api.novu.co/v1/topics/${topicKey}/subscribers`,
         headers: {
-          Authorization: API_KEY,
+          Authorization: configuration().novu.apiKey,
           'Content-Type': 'application/json',
         },
         data: {
@@ -61,11 +60,24 @@ export class TopicsService {
     }
   }
 
-  async removeSubscribers(subscriberId: string, topicKey: string) {
+  async removeSubscribers(topicKey: string, subscriberId: string) {
     try {
+      const novu = new Novu(configuration().novu.apiKeySdk);
       await novu.topics.removeSubscribers(topicKey, {
         subscribers: [subscriberId],
       });
     } catch (error: any) {}
+  }
+
+  async deleteTopic(topicKey: string) {
+    try {
+      await axios.delete(`https://api.novu.co/v1/topics/${topicKey}`, {
+        headers: {
+          Authorization: configuration().novu.apiKey,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
   }
 }

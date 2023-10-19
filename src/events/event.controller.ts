@@ -8,7 +8,7 @@ export class EventController {
 
   @Post()
   create(@Body() createEventDto: EventDto) {
-    return this.eventService.create(createEventDto);
+    return this.eventService.sendToSubscriber(createEventDto);
   }
 
   @Post('topics/:key')

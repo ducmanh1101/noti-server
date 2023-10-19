@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Delete } from '@nestjs/common';
 import { TopicsService } from './topics.service';
 import { TopicDto } from './dto/topic.dto';
 
@@ -27,5 +27,18 @@ export class TopicsController {
     @Body('subscribers') subscribers: string,
   ) {
     return this.topicsService.addSubscribers(topicKey, subscribers);
+  }
+
+  @Delete(':topicKey')
+  deleteTopic(@Param('topicKey') topicKey: string) {
+    return this.topicsService.deleteTopic(topicKey);
+  }
+
+  @Post(':topicKey/subscribers/removal')
+  removeSubscribers(
+    @Param('topicKey') topicKey: string,
+    @Body('subscriberId') subscriberId: string,
+  ) {
+    return this.topicsService.removeSubscribers(topicKey, subscriberId);
   }
 }

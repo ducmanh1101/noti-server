@@ -1,16 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { EventDto, EventTopicDto } from './dto/event.dto';
 import { Novu, TriggerRecipientsTypeEnum } from '@novu/node';
-import { API_KEY_SDK, WORKFLOW_TRIGGER_ID } from 'src/constant';
 
-const novu = new Novu(API_KEY_SDK);
+import configuration from 'src/config/configuration';
 
 @Injectable()
 export class EventService {
-  async create(eventDto: EventDto) {
+  async sendToSubscriber(eventDto: EventDto) {
     try {
-      console.log(eventDto);
-      await novu.trigger(WORKFLOW_TRIGGER_ID, {
+      const novu = new Novu(configuration().novu.apiKeySdk);
+      await novu.trigger(configuration().novu.workflowId, {
         to: {
           subscriberId: eventDto.subscriberId,
         },
@@ -25,7 +24,8 @@ export class EventService {
   }
 
   async sendTopicNotification(key: string, eventTopicDto: EventTopicDto) {
-    const result = await novu.trigger(WORKFLOW_TRIGGER_ID, {
+    const novu = new Novu(configuration().novu.apiKeySdk);
+    const result = await novu.trigger(configuration().novu.workflowId, {
       to: [{ type: TriggerRecipientsTypeEnum.TOPIC, topicKey: key }],
       payload: {
         title: eventTopicDto.title,

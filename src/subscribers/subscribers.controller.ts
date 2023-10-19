@@ -4,12 +4,11 @@ import {
   Body,
   Param,
   Delete,
-  Put,
   Get,
+  Put,
 } from '@nestjs/common';
 import { SubscribersService } from './subscribers.service';
 import { SubscriberDto } from './dto/create-subscriber.dto';
-// import { UpdateSubscriberDto } from './dto/update-subscriber.dto';
 
 @Controller('subscribers')
 export class SubscribersController {
@@ -30,12 +29,25 @@ export class SubscribersController {
     return this.subscribersService.create(createSubscriberDto);
   }
 
-  @Put(':subscriberId')
-  update(
+  @Put('/fcm/:subscriberId')
+  updateFcmDeviceToken(
     @Param('subscriberId') subscriberId: string,
-    @Body('deviceTokens') deviceToken: [],
+    @Body('deviceTokens') deviceTokens: [],
   ) {
-    return this.subscribersService.setDeviceToken(subscriberId, deviceToken);
+    return this.subscribersService.setDeviceTokenFCM(
+      subscriberId,
+      deviceTokens,
+    );
+  }
+  @Put('/expo/:subscriberId')
+  updateExpoDeviceToken(
+    @Param('subscriberId') subscriberId: string,
+    @Body('deviceTokens') deviceTokens: [],
+  ) {
+    return this.subscribersService.setDeviceTokenExpo(
+      subscriberId,
+      deviceTokens,
+    );
   }
 
   @Delete(':subscriberId')

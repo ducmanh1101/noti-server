@@ -1,15 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { SubscriberDto } from './dto/create-subscriber.dto';
 import { Novu, PushProviderIdEnum } from '@novu/node';
-import { API_KEY, API_KEY_SDK } from 'src/constant';
 import axios from 'axios';
-const novu = new Novu(API_KEY_SDK);
+import configuration from 'src/config/configuration';
 
 @Injectable()
 export class SubscribersService {
   async create(subscriberDto: SubscriberDto) {
     try {
-      console.log(subscriberDto);
+      const novu = new Novu(configuration().novu.apiKeySdk);
       await novu.subscribers.identify(subscriberDto.subscriberId, {
         firstName: subscriberDto.firstName,
         lastName: subscriberDto.lastName,
@@ -20,12 +19,13 @@ export class SubscribersService {
       console.log(er);
     }
   }
+
   async getSubscriber(subscriberId: string) {
     try {
       const options = {
         method: 'GET',
         headers: {
-          Authorization: API_KEY,
+          Authorization: configuration().novu.apiKey,
         },
       };
       const res = await axios(
@@ -36,23 +36,38 @@ export class SubscribersService {
     } catch (error: any) {}
   }
 
-  async setDeviceToken(subscriberId: string, deviceToken: []) {
+  async setDeviceTokenFCM(subscriberId: string, deviceTokens: []) {
     try {
-      console.log('subid', subscriberId);
-      console.log('device', deviceToken);
+      const novu = new Novu(configuration().novu.apiKeySdk);
       await novu.subscribers.setCredentials(
         subscriberId,
         PushProviderIdEnum.FCM,
         {
-          deviceTokens: deviceToken,
+          deviceTokens,
         },
       );
     } catch (error: any) {
       console.log(error);
     }
   }
+  async setDeviceTokenExpo(subscriberId: string, deviceTokens: []) {
+    try {
+      const novu = new Novu(configuration().novu.apiKeySdk);
+      await novu.subscribers.setCredentials(
+        subscriberId,
+        PushProviderIdEnum.EXPO,
+        {
+          deviceTokens: deviceTokens,
+        },
+      );
+    } catch (error: any) {
+      console.log(error);
+    }
+  }
+
   async remove(subscriberId: string) {
     try {
+      const novu = new Novu(configuration().novu.apiKeySdk);
       await novu.subscribers.delete(subscriberId);
     } catch (er: any) {
       console.log(er);
@@ -64,7 +79,7 @@ export class SubscribersService {
       const options = {
         method: 'GET',
         headers: {
-          Authorization: API_KEY,
+          Authorization: configuration().novu.apiKey,
         },
       };
       const res = await axios(`https://api.novu.co/v1/subscribers`, options);

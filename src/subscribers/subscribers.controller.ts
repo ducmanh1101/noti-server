@@ -39,8 +39,20 @@ export class SubscribersController {
       deviceTokens,
     );
   }
+
   @Put('/expo/:subscriberId')
   updateExpoDeviceToken(
+    @Param('subscriberId') subscriberId: string,
+    @Body('deviceTokens') deviceTokens: [],
+  ) {
+    return this.subscribersService.setDeviceTokenExpo(
+      subscriberId,
+      deviceTokens,
+    );
+  }
+
+  @Put('/apns/:subscriberId')
+  updateAPNSDeviceToken(
     @Param('subscriberId') subscriberId: string,
     @Body('deviceTokens') deviceTokens: [],
   ) {

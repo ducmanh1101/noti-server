@@ -64,6 +64,20 @@ export class SubscribersService {
       console.log(error);
     }
   }
+  async setDeviceTokenAPNS(subscriberId: string, deviceTokens: []) {
+    try {
+      const novu = new Novu(configuration().novu.apiKeySdk);
+      await novu.subscribers.setCredentials(
+        subscriberId,
+        PushProviderIdEnum.APNS,
+        {
+          deviceTokens: deviceTokens,
+        },
+      );
+    } catch (error: any) {
+      console.log(error);
+    }
+  }
 
   async remove(subscriberId: string) {
     try {
